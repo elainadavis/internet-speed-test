@@ -1,72 +1,206 @@
 <template>
   <div class="container">
-    <div>
-      <logo />
-      <h1 class="title">
-        internet-speed-test
-      </h1>
-      <h2 class="subtitle">
-        My rad Nuxt.js project
-      </h2>
-      <div class="links">
-        <a
-          href="https://nuxtjs.org/"
-          target="_blank"
-          class="button--green"
-        >
-          Documentation
-        </a>
-        <a
-          href="https://github.com/nuxt/nuxt.js"
-          target="_blank"
-          class="button--grey"
-        >
-          GitHub
-        </a>
+    
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <!-- Responsive 123 -->
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <title>Connection Speed Test</title>
+    <!-- End Responsive -->
+    <link rel="icon" href="./assets/favicon.ico" sizes="32x32" type="image/vnd.microsoft.icon">
+    <link rel="stylesheet" href="https://s3-us-west-1.amazonaws.com/patterns.esri.com/files/calcite-web/1.2.5/css/calcite-web.min.css">
+    <link rel="stylesheet" href="https://js.arcgis.com/4.14/esri/css/main.css">
+    <link rel="stylesheet" href="./styles/main.css">
+    <script src="./app/dojo.js"></script>
+    <script src="https://js.arcgis.com/4.14/"></script>
+    <script src="https://survey123.arcgis.com/api/jsapi"></script>
+    <script>
+      require(["Application/Main"], function(Main){
+        const mainApplicaiton = new Main();
+      });
+    </script>
+  </head>
+  <body>
+
+    <div id="header-panel" class="panel panel-dark-blue panel-no-border trailer-half">
+      <div class="font-size-2">Connection Speed Test</div>
+    </div>
+
+    <div id="connection-test-panel" class="panel panel-white panel-no-border">
+      <div class="trailer-half">
+        <mark class="label label-grey font-size-3">1</mark>
+        <div class="inline-block padding-left-half">Test Current Internet Speed</div>
+      </div>
+      <div class="panel panel-dark-grey panel-no-border"></div>
+      <div id="speed-test-panel" class="panel panel-light-blue panel-no-border">
+        <div class="text-center">
+          <button id="speed-test-btn" class="btn btn-large btn-teal font-size-1 icon-ui-dashboard leader-quarter trailer-half">click here to test download speed</button>
+          <div class="form-container">
+        <div id="sc-container">
+          <div id="sc-branding" class="sc-bb">
+            <a target="_blank" href="https://www.speedcheck.org/">
+              <img
+                src="https://cdn.speedcheck.org/branding/speedcheck-logo-18.png"
+                alt="Speedcheck"
+              />
+            </a>
+          </div>
+        </div>
+      </div>
+      <script src="https://cdn.speedcheck.org/basic/scbjs.min.js" async></script>
+          <div id="speed-test-label" class="font-size-0 avenir-bold-italic text-black">...</div>
+        </div>
       </div>
     </div>
+
+    <div id="survey-panel" class="panel panel-white panel-no-border hide">
+      <div class="trailer-half">
+        <mark class="label label-grey font-size-3">2</mark>
+        <div class="inline-block padding-left-half">Submit Internet Speed Survey</div>
+      </div>
+      <div id="survey123-webform" class="panel panel-no-padding panel-no-border"></div>
+    </div>
+
+  </body>
+</html>
+
   </div>
 </template>
 
 <script>
-import Logo from '~/components/Logo.vue'
+  var open = window.XMLHttpRequest.prototype.open,
+        send = window.XMLHttpRequest.prototype.send;
+      function openReplacement(method, url, async, user, password) {
+        this._url = url;
+        return open.apply(this, arguments);
+      }
+      function sendReplacement(data) {
+        if (this._url == "https://api.speedspot.org/basic" && arguments[0]) {
+          console.log(arguments[0]);
+          vm.results = JSON.parse(arguments[0]);
+        }
+        return send.apply(this, arguments);
+      }
+      window.XMLHttpRequest.prototype.open = openReplacement;
+      window.XMLHttpRequest.prototype.send = sendReplacement;
 
-export default {
-  components: {
-    Logo
-  }
-}
+    define([
+      "calcite",
+      "dojo/_base/declare",
+      "esri/identity/IdentityManager",
+      "esri/core/promiseUtils"
+    ], function(calcite, declare, IdentityManager, promiseUtils, initializeSurvey){
+      return declare([], {
+
+        /**
+        *
+        */
+        constructor: function(){
+
+          // INITIALIZE CALCITE WEB //
+          calcite.init();
+
+          // INITIALISE SURVEY //
+          this.initializeSurvey();
+
+        },
+
+      /**
+      *  INITIALIZE SURVEY123 FORM AFTER CONNECTION SPEED TEST //
+      */
+
+            //
+            // SURVEY123 WEB FORM //
+            //
+          
+            let webform = new Survey123WebForm({
+              container: "survey123-webform",
+              clientId: "Jy4JtM71ralXVggd",
+              portalUrl: "https://www.arcgis.com",
+              itemId: "f7d1b61670ec49788a8a9f246f5b2e9b",
+              onFormLoaded: (data) => {
+
+                //
+                // ANSWER INTERNET SPEED QUESTION WITH CONNECTION SPEED INFO //
+                //
+                Survey123WebForm.setQuestionValue({ "internet_speed": speedMbps });
+              }
+            });
+
+            // SHOW SURVEY123 FORM //
+            surveyPanel = document.getElementById('survey-panel');
+            surveyPanel.classList.remove('hide');
+
+          });
+        });
+
+      },
+
 </script>
 
 <style>
-.container {
-  margin: 0 auto;
-  min-height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
+
+html,
+body {
+  margin                   : 0;
+  padding                  : 0;
+  width                    : 100%;
+  height                   : auto;
+  font-size                : 100%;
+  -webkit-text-size-adjust : 100%;
+  -moz-text-size-adjust    : 100%;
+  -ms-text-size-adjust     : 100%;
 }
 
-.title {
-  font-family: 'Quicksand', 'Source Sans Pro', -apple-system, BlinkMacSystemFont,
-    'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-  display: block;
-  font-weight: 300;
-  font-size: 100px;
-  color: #35495e;
-  letter-spacing: 1px;
+body {
+  background-color : #fff;
+  display          : flex;
+  flex-direction   : column;
 }
 
-.subtitle {
-  font-weight: 300;
-  font-size: 42px;
-  color: #526488;
-  word-spacing: 5px;
-  padding-bottom: 15px;
+#speed-test-panel {
+  flex-shrink    : 0;
+  flex-grow      : 0;
+  min-width      : 0;
+  min-height     : 0;
+  display        : flex;
+  flex-direction : column;
 }
 
-.links {
-  padding-top: 15px;
+.panel-dark-blue {
+  background-color : #626060;
 }
+
+.panel-light-blue {
+  background-color : #F4F1F1;
+}
+
+.panel-dark-grey {
+  background-color : #626060;
+}
+
+.label-grey {
+  background-color:#626060;
+  color:#fff;
+}
+
+.btn-teal {
+  background:#1DDDD9;
+  color:#fff;
+  border:1px solid #1DDDD9;
+}
+
+#survey123-webform {
+  height      : auto;
+  flex-shrink : 1;
+  flex-grow   : 1;
+  min-width   : 0;
+  min-height  : 0;
+}
+
 </style>
