@@ -45,74 +45,96 @@
 </template>
 
 <script>
-  var open = window.XMLHttpRequest.prototype.open,
-        send = window.XMLHttpRequest.prototype.send;
-      function openReplacement(method, url, async, user, password) {
-        this._url = url;
-        return open.apply(this, arguments);
+// define webform for JS api
+let webform = new Survey123WebForm({
+  container: "survey123-webform",
+  clientId: "Jy4JtM71ralXVggd",
+  portalUrl: "https://www.arcgis.com",
+  itemId: "f7d1b61670ec49788a8a9f246f5b2e9b",
+  onFormLoaded: data => {
+    //
+    // ANSWER INTERNET SPEED QUESTION WITH CONNECTION SPEED INFO //
+    //
+    Survey123WebForm.setQuestionValue({ internet_speed: speedMbps });
+  }
+});
+export default {
+  data: function() {
+    return {
+      variable: "Hello"
+    };
+  },
+  mounted: function() {
+    //listen for speed test message out to capture the data for use in form
+    var open = window.XMLHttpRequest.prototype.open,
+      send = window.XMLHttpRequest.prototype.send;
+    function openReplacement(method, url, async, user, password) {
+      this._url = url;
+      return open.apply(this, arguments);
+    }
+    function sendReplacement(data) {
+      if (this._url == "https://api.speedspot.org/basic" && arguments[0]) {
+        console.log(arguments[0]);
+        vm.results = JSON.parse(arguments[0]);
       }
-      function sendReplacement(data) {
-        if (this._url == "https://api.speedspot.org/basic" && arguments[0]) {
-          console.log(arguments[0]);
-          vm.results = JSON.parse(arguments[0]);
-        }
-        return send.apply(this, arguments);
-      }
-      window.XMLHttpRequest.prototype.open = openReplacement;
-      window.XMLHttpRequest.prototype.send = sendReplacement;
+      return send.apply(this, arguments);
+    }
+    window.XMLHttpRequest.prototype.open = openReplacement;
+    window.XMLHttpRequest.prototype.send = sendReplacement;
+  },
+  methods: {}
+};
 
-    define([
-      "calcite",
-      "dojo/_base/declare",
-      "esri/identity/IdentityManager",
-      "esri/core/promiseUtils"
-    ], function(calcite, declare, IdentityManager, promiseUtils, initializeSurvey){
-      return declare([], {
+define([
+  "calcite",
+  "dojo/_base/declare",
+  "esri/identity/IdentityManager",
+  "esri/core/promiseUtils"
+], function(calcite, declare, IdentityManager, promiseUtils, initializeSurvey){
+  return declare([], {
 
-        /**
-        *
-        */
-        constructor: function(){
+    /**
+    *
+    */
+    constructor: function(){
 
-          // INITIALIZE CALCITE WEB //
-          calcite.init();
+      // INITIALIZE CALCITE WEB //
+      calcite.init();
 
-          // INITIALISE SURVEY //
-          this.initializeSurvey();
+      // INITIALISE SURVEY //
+      this.initializeSurvey();
 
-        },
+    },
 
-      /**
-      *  INITIALIZE SURVEY123 FORM AFTER CONNECTION SPEED TEST //
-      */
+  /**
+  *  INITIALIZE SURVEY123 FORM AFTER CONNECTION SPEED TEST //
+  */
+
+        //
+        // SURVEY123 WEB FORM //
+        //
+
+        let webform = new Survey123WebForm({
+          container: "survey123-webform",
+          clientId: "Jy4JtM71ralXVggd",
+          portalUrl: "https://www.arcgis.com",
+          itemId: "f7d1b61670ec49788a8a9f246f5b2e9b",
+          onFormLoaded: (data) => {
 
             //
-            // SURVEY123 WEB FORM //
+            // ANSWER INTERNET SPEED QUESTION WITH CONNECTION SPEED INFO //
             //
-
-            let webform = new Survey123WebForm({
-              container: "survey123-webform",
-              clientId: "Jy4JtM71ralXVggd",
-              portalUrl: "https://www.arcgis.com",
-              itemId: "f7d1b61670ec49788a8a9f246f5b2e9b",
-              onFormLoaded: (data) => {
-
-                //
-                // ANSWER INTERNET SPEED QUESTION WITH CONNECTION SPEED INFO //
-                //
-                Survey123WebForm.setQuestionValue({ "internet_speed": speedMbps });
-              }
-            });
-
-            // SHOW SURVEY123 FORM //
-            surveyPanel = document.getElementById('survey-panel');
-            surveyPanel.classList.remove('hide');
-
-          });
+            Survey123WebForm.setQuestionValue({ "internet_speed": speedMbps });
+          }
         });
 
-      },
+        // SHOW SURVEY123 FORM //
+        surveyPanel = document.getElementById('survey-panel');
+        surveyPanel.classList.remove('hide');
+      });
+    });
 
+  },
 </script>
 
 <style>
