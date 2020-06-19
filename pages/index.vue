@@ -1,32 +1,5 @@
 <template>
-  <div class="container">
-    
-<!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="utf-8">
-    <!-- Responsive 123 -->
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="default">
-    <title>Connection Speed Test</title>
-    <!-- End Responsive -->
-    <link rel="icon" href="./assets/favicon.ico" sizes="32x32" type="image/vnd.microsoft.icon">
-    <link rel="stylesheet" href="https://s3-us-west-1.amazonaws.com/patterns.esri.com/files/calcite-web/1.2.5/css/calcite-web.min.css">
-    <link rel="stylesheet" href="https://js.arcgis.com/4.14/esri/css/main.css">
-    <link rel="stylesheet" href="./styles/main.css">
-    <script src="./app/dojo.js"></script>
-    <script src="https://js.arcgis.com/4.14/"></script>
-    <script src="https://survey123.arcgis.com/api/jsapi"></script>
-    <script>
-      require(["Application/Main"], function(Main){
-        const mainApplicaiton = new Main();
-      });
-    </script>
-  </head>
-  <body>
-
+  <div class="ind-container">
     <div id="header-panel" class="panel panel-dark-blue panel-no-border trailer-half">
       <div class="font-size-2">Connection Speed Test</div>
     </div>
@@ -39,20 +12,23 @@
       <div class="panel panel-dark-grey panel-no-border"></div>
       <div id="speed-test-panel" class="panel panel-light-blue panel-no-border">
         <div class="text-center">
-          <button id="speed-test-btn" class="btn btn-large btn-teal font-size-1 icon-ui-dashboard leader-quarter trailer-half">click here to test download speed</button>
+          <button
+            id="speed-test-btn"
+            class="btn btn-large btn-teal font-size-1 icon-ui-dashboard leader-quarter trailer-half"
+          >click here to test download speed</button>
           <div class="form-container">
-        <div id="sc-container">
-          <div id="sc-branding" class="sc-bb">
-            <a target="_blank" href="https://www.speedcheck.org/">
-              <img
-                src="https://cdn.speedcheck.org/branding/speedcheck-logo-18.png"
-                alt="Speedcheck"
-              />
-            </a>
+            <div id="sc-container">
+              <div id="sc-branding" class="sc-bb">
+                <a target="_blank" href="https://www.speedcheck.org/">
+                  <img
+                    src="https://cdn.speedcheck.org/branding/speedcheck-logo-18.png"
+                    alt="Speedcheck"
+                  />
+                </a>
+              </div>
+            </div>
           </div>
-        </div>
-      </div>
-      <script src="https://cdn.speedcheck.org/basic/scbjs.min.js" async></script>
+          <script src="https://cdn.speedcheck.org/basic/scbjs.min.js" async></script>
           <div id="speed-test-label" class="font-size-0 avenir-bold-italic text-black">...</div>
         </div>
       </div>
@@ -65,10 +41,6 @@
       </div>
       <div id="survey123-webform" class="panel panel-no-padding panel-no-border"></div>
     </div>
-
-  </body>
-</html>
-
   </div>
 </template>
 
@@ -117,7 +89,7 @@
             //
             // SURVEY123 WEB FORM //
             //
-          
+
             let webform = new Survey123WebForm({
               container: "survey123-webform",
               clientId: "Jy4JtM71ralXVggd",
@@ -144,63 +116,61 @@
 </script>
 
 <style>
-
 html,
 body {
-  margin                   : 0;
-  padding                  : 0;
-  width                    : 100%;
-  height                   : auto;
-  font-size                : 100%;
-  -webkit-text-size-adjust : 100%;
-  -moz-text-size-adjust    : 100%;
-  -ms-text-size-adjust     : 100%;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: auto;
+  font-size: 100%;
+  -webkit-text-size-adjust: 100%;
+  -moz-text-size-adjust: 100%;
+  -ms-text-size-adjust: 100%;
 }
 
 body {
-  background-color : #fff;
-  display          : flex;
-  flex-direction   : column;
+  background-color: #fff;
+  display: flex;
+  flex-direction: column;
 }
 
 #speed-test-panel {
-  flex-shrink    : 0;
-  flex-grow      : 0;
-  min-width      : 0;
-  min-height     : 0;
-  display        : flex;
-  flex-direction : column;
+  flex-shrink: 0;
+  flex-grow: 0;
+  min-width: 0;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
 }
 
 .panel-dark-blue {
-  background-color : #626060;
+  background-color: #626060;
 }
 
 .panel-light-blue {
-  background-color : #F4F1F1;
+  background-color: #f4f1f1;
 }
 
 .panel-dark-grey {
-  background-color : #626060;
+  background-color: #626060;
 }
 
 .label-grey {
-  background-color:#626060;
-  color:#fff;
+  background-color: #626060;
+  color: #fff;
 }
 
 .btn-teal {
-  background:#1DDDD9;
-  color:#fff;
-  border:1px solid #1DDDD9;
+  background: #1dddd9;
+  color: #fff;
+  border: 1px solid #1dddd9;
 }
 
 #survey123-webform {
-  height      : auto;
-  flex-shrink : 1;
-  flex-grow   : 1;
-  min-width   : 0;
-  min-height  : 0;
+  height: auto;
+  flex-shrink: 1;
+  flex-grow: 1;
+  min-width: 0;
+  min-height: 0;
 }
-
 </style>
