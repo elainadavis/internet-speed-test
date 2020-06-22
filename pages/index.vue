@@ -1,13 +1,18 @@
 <template>
   <div class="ind-container">
-    <div id="header-panel" class="panel panel-dark-blue panel-no-border trailer-half">
+    <div
+      id="header-panel"
+      class="panel panel-dark-blue panel-no-border trailer-half"
+    >
       <div class="font-size-2">Connection Speed Test</div>
     </div>
 
     <div id="connection-test-panel" class="panel panel-white panel-no-border">
       <div class="trailer-half">
         <mark class="label label-grey font-size-3">1</mark>
-        <div class="inline-block padding-left-half">Test Current Internet Speed</div>
+        <div class="inline-block padding-left-half">
+          Test Current Internet Speed
+        </div>
       </div>
       <div class="panel panel-dark-grey panel-no-border"></div>
       <div id="speed-test-panel" class="panel panel-light-blue panel-no-border">
@@ -15,7 +20,9 @@
           <button
             id="speed-test-btn"
             class="btn btn-large btn-teal font-size-1 icon-ui-dashboard leader-quarter trailer-half"
-          >click here to test download speed</button>
+          >
+            click here to test download speed
+          </button>
           <div class="form-container">
             <div id="sc-container">
               <div id="sc-branding" class="sc-bb">
@@ -28,8 +35,16 @@
               </div>
             </div>
           </div>
-          <script src="https://cdn.speedcheck.org/basic/scbjs.min.js" async></script>
-          <div id="speed-test-label" class="font-size-0 avenir-bold-italic text-black">...</div>
+          <script
+            src="https://cdn.speedcheck.org/basic/scbjs.min.js"
+            async
+          ></script>
+          <div
+            id="speed-test-label"
+            class="font-size-0 avenir-bold-italic text-black"
+          >
+            ...
+          </div>
         </div>
       </div>
     </div>
@@ -37,27 +52,19 @@
     <div id="survey-panel" class="panel panel-white panel-no-border hide">
       <div class="trailer-half">
         <mark class="label label-grey font-size-3">2</mark>
-        <div class="inline-block padding-left-half">Submit Internet Speed Survey</div>
+        <div class="inline-block padding-left-half">
+          Submit Internet Speed Survey
+        </div>
       </div>
-      <div id="survey123-webform" class="panel panel-no-padding panel-no-border"></div>
+      <div
+        id="survey123-webform"
+        class="panel panel-no-padding panel-no-border"
+      ></div>
     </div>
   </div>
 </template>
 
 <script>
-// define webform for JS api
-let webform = new Survey123WebForm({
-  container: "survey123-webform",
-  clientId: "Jy4JtM71ralXVggd",
-  portalUrl: "https://www.arcgis.com",
-  itemId: "f7d1b61670ec49788a8a9f246f5b2e9b",
-  onFormLoaded: data => {
-    //
-    // ANSWER INTERNET SPEED QUESTION WITH CONNECTION SPEED INFO //
-    //
-    Survey123WebForm.setQuestionValue({ internet_speed: speedMbps });
-  }
-});
 export default {
   data: function() {
     return {
@@ -65,6 +72,7 @@ export default {
     };
   },
   mounted: function() {
+    let vm = this;
     //listen for speed test message out to capture the data for use in form
     var open = window.XMLHttpRequest.prototype.open,
       send = window.XMLHttpRequest.prototype.send;
@@ -76,65 +84,35 @@ export default {
       if (this._url == "https://api.speedspot.org/basic" && arguments[0]) {
         console.log(arguments[0]);
         vm.results = JSON.parse(arguments[0]);
+        vm.initializeForm(vm.results);
       }
       return send.apply(this, arguments);
     }
     window.XMLHttpRequest.prototype.open = openReplacement;
     window.XMLHttpRequest.prototype.send = sendReplacement;
   },
-  methods: {}
-};
-
-define([
-  "calcite",
-  "dojo/_base/declare",
-  "esri/identity/IdentityManager",
-  "esri/core/promiseUtils"
-], function(calcite, declare, IdentityManager, promiseUtils, initializeSurvey){
-  return declare([], {
-
-    /**
-    *
-    */
-    constructor: function(){
-
-      // INITIALIZE CALCITE WEB //
-      calcite.init();
-
-      // INITIALISE SURVEY //
-      this.initializeSurvey();
-
-    },
-
-  /**
-  *  INITIALIZE SURVEY123 FORM AFTER CONNECTION SPEED TEST //
-  */
-
-        //
-        // SURVEY123 WEB FORM //
-        //
-
-        let webform = new Survey123WebForm({
-          container: "survey123-webform",
-          clientId: "Jy4JtM71ralXVggd",
-          portalUrl: "https://www.arcgis.com",
-          itemId: "f7d1b61670ec49788a8a9f246f5b2e9b",
-          onFormLoaded: (data) => {
-
-            //
-            // ANSWER INTERNET SPEED QUESTION WITH CONNECTION SPEED INFO //
-            //
-            Survey123WebForm.setQuestionValue({ "internet_speed": speedMbps });
-          }
-        });
-
-        // SHOW SURVEY123 FORM //
-        surveyPanel = document.getElementById('survey-panel');
-        surveyPanel.classList.remove('hide');
+  methods: {
+    initializeForm: function(speedData) {
+      const survey123WebForm = new Survey123WebForm({
+        container: "survey123-webform",
+        clientId: "Jy4JtM71ralXVggd",
+        portalUrl: "https://www.arcgis.com",
+        itemId: "f7d1b61670ec49788a8a9f246f5b2e9b",
+        onFormLoaded: data => {
+          //
+          // ANSWER INTERNET SPEED QUESTION WITH CONNECTION SPEED INFO //
+          //
+          survey123WebForm.setQuestionValue({
+            internet_speed: speedData.downloadValue
+          });
+        }
       });
-    });
-
-  },
+      // SHOW SURVEY123 FORM //
+      let surveyPanel = document.getElementById("survey-panel");
+      surveyPanel.classList.remove("hide");
+    }
+  }
+};
 </script>
 
 <style>
