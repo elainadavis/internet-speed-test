@@ -68,7 +68,7 @@
 export default {
   data: function() {
     return {
-      variable: "Hello"
+      results: null
     };
   },
   mounted: function() {
@@ -103,7 +103,7 @@ export default {
           // ANSWER INTERNET SPEED QUESTION WITH CONNECTION SPEED INFO //
           //
           survey123WebForm.setQuestionValue({
-            internet_speed: speedData.downloadValue
+            internet_speed: speedData.downloadValue,
           });
         }
       });
